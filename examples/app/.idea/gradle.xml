@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/demoapp" />
             <option value="$PROJECT_DIR$/../../uploadservice" />
+            <option value="$PROJECT_DIR$/../../uploadservice-box" />
             <option value="$PROJECT_DIR$/../../uploadservice-ftp" />
             <option value="$PROJECT_DIR$/../../uploadservice-okhttp" />
             <option value="$PROJECT_DIR$/../../uploadservice-s3" />
