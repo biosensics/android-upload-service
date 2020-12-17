@@ -7,10 +7,10 @@ import net.gotev.uploadservice.persistence.PersistableData
 
 @Parcelize
 data class BoxUploadTaskParameters(
-        var userID: String = "",
-        var clientID: String = "",
-        var clientSecret: String = "",
-        var redirectUrl: String = "",
+    var userID: String = "",
+    var clientID: String = "",
+    var clientSecret: String = "",
+    var redirectUrl: String = ""
 
 ) : Parcelable, Persistable {
     companion object : Persistable.Creator<BoxUploadTaskParameters> {

@@ -6,26 +6,24 @@ import com.box.androidsdk.content.BoxApiFile
 import com.box.androidsdk.content.BoxException
 import com.box.androidsdk.content.BoxFutureTask
 import com.box.androidsdk.content.listeners.ProgressListener
-import com.box.androidsdk.content.models.*
+import com.box.androidsdk.content.models.BoxSession
+import com.box.androidsdk.content.models.BoxFile
 import com.box.androidsdk.content.requests.BoxRequestsFile
 import net.gotev.uploadservice.data.UploadFile
 import java.io.File
-import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 
 import java.io.Closeable
 
 class BoxClientWrapper(
-        context: Context,
-        boxSession: BoxSession,
-        observer: Observer
-) : Closeable
-{
+    context: Context,
+    boxSession: BoxSession,
+    observer: Observer
+) : Closeable {
 
     private val context = context
     private val boxFileApi = BoxApiFile(boxSession)
-
 
     private lateinit var uploadTask: BoxFutureTask<BoxFile>
 

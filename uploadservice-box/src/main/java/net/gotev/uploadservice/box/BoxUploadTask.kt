@@ -4,17 +4,15 @@ import com.box.androidsdk.content.models.BoxSession
 import net.gotev.uploadservice.UploadTask
 import net.gotev.uploadservice.network.HttpStack
 
-class BoxUploadTask: UploadTask(), BoxClientWrapper.Observer {
+class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
 
     private val boxParams by lazy {
         BoxUploadTaskParameters.createFromPersistableData(params.additionalParameters)
     }
 
-
-
     @Throws(Exception::class)
     override fun upload(httpStack: HttpStack) {
-        val boxParams = boxParams;
+        val boxParams = boxParams
         BoxClientWrapper(
                 context = context,
                 boxSession = BoxSession(context, boxParams.userID, boxParams.clientID, boxParams.clientSecret, boxParams.redirectUrl),
@@ -39,7 +37,6 @@ class BoxUploadTask: UploadTask(), BoxClientWrapper.Observer {
                 )
                 file.successfullyUploaded = true
             }
-
         }
     }
 

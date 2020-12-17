@@ -8,14 +8,14 @@ import net.gotev.uploadservice.data.UploadFile
 import java.io.File
 import java.io.FileNotFoundException
 
-class BoxUploadRequest(context: Context, boxSession: BoxSession): UploadRequest<BoxUploadRequest>(context, "") {
+class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest<BoxUploadRequest>(context, "") {
 
     protected val boxparams = BoxUploadTaskParameters(
             userID = boxSession.userId,
             clientID = boxSession.clientId,
             clientSecret = boxSession.clientSecret,
             redirectUrl = boxSession.redirectUrl
-    );
+    )
 
     override val taskClass: Class<out UploadTask>
         get() = BoxUploadTask::class.java
@@ -30,14 +30,13 @@ class BoxUploadRequest(context: Context, boxSession: BoxSession): UploadRequest<
         return this
     }
 
-
     /**
      * This would call the upload method of the upload task class (S3UploadTask)
      */
     override fun startUpload(): String {
         require(files.isNotEmpty()) { "Add at least one file to start box upload!" }
         files.forEach { uploadFile -> run {
-            require (File(uploadFile.path).exists()) { "One or more files do not exist!" }
+            require(File(uploadFile.path).exists()) { "One or more files do not exist!" }
         }
         }
         return super.startUpload()
