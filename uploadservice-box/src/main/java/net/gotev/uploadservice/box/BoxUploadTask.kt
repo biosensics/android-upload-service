@@ -2,7 +2,9 @@ package net.gotev.uploadservice.box
 
 import com.box.androidsdk.content.models.BoxSession
 import net.gotev.uploadservice.UploadTask
+import net.gotev.uploadservice.data.UploadFile
 import net.gotev.uploadservice.network.HttpStack
+import net.gotev.uploadservice.network.ServerResponse
 
 class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
 
@@ -14,8 +16,9 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
     override fun upload(httpStack: HttpStack) {
         val boxParams = boxParams
         BoxClientWrapper(
-                context = context,
+                uploadId = params.id,
                 boxSession = BoxSession(context, boxParams.userID, boxParams.clientID, boxParams.clientSecret, boxParams.redirectUrl),
+                shouldOverwrite = boxParams.shouldOverwrite,
                 observer = this
         ).use { boxClient ->
 
@@ -32,10 +35,7 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
                 if (file.successfullyUploaded)
                     continue
 
-                boxClient.uploadFile(
-                        file
-                )
-                file.successfullyUploaded = true
+                boxClient.uploadFile(file, boxParams.folderId)
             }
         }
     }
@@ -64,10 +64,20 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
     }
 
     override fun onProgressChanged(client: BoxClientWrapper, numBytes: Long, bytesTotal: Long) {
-        onProgress(numBytes)
+        onProgress(numBytes - uploadedBytes)
         if (!shouldContinue) {
             client.close()
-            // exceptionHandling(Exception("User cancelled upload!"))
+            exceptionHandling(Exception("User cancelled upload!"))
         }
+    }
+
+    override fun onCompleted(client: BoxClientWrapper, uploadFile: UploadFile) {
+        params.files.filter { it.equals(uploadFile) }.first().successfullyUploaded = true
+        onResponseReceived(ServerResponse.successfulEmpty())
+    }
+
+    override fun onError(client: BoxClientWrapper, exception: Exception) {
+        onResponseReceived(ServerResponse.errorEmpty())
+        exceptionHandling(exception)
     }
 }

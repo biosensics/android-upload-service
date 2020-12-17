@@ -8,7 +8,7 @@ import net.gotev.uploadservice.data.UploadFile
 import java.io.File
 import java.io.FileNotFoundException
 
-class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest<BoxUploadRequest>(context, "") {
+class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest<BoxUploadRequest>(context, "serverURL") {
 
     protected val boxparams = BoxUploadTaskParameters(
             userID = boxSession.userId,
@@ -22,11 +22,19 @@ class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest
 
     override fun getAdditionalParameters() = boxparams.toPersistableData()
 
-    fun setCredentials(clientID: String, clientSecret: String): BoxUploadRequest {
-        require(clientID.isNotBlank()) { "Specify clientID" }
-        require(clientSecret.isNotBlank()) { "Specify clientSecret!" }
-        boxparams.clientID = clientID
-        boxparams.clientSecret = clientSecret
+    /**
+     * Sets whether a new version of the file should be overwritten if a file already exists
+     */
+    fun setShouldOverwrite(shouldOverwrite: Boolean): BoxUploadRequest {
+        boxparams.shouldOverwrite = shouldOverwrite
+        return this
+    }
+
+    /**
+     * Sets the folder Id of the uploaded file. you should get this Id from your account
+     */
+    fun setFolderId(folderId: String): BoxUploadRequest {
+        boxparams.folderId = folderId
         return this
     }
 

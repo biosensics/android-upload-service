@@ -87,4 +87,5 @@ dependencies {
     implementation project(':uploadservice')
     implementation project(':uploadservice-okhttp')
     implementation project(':uploadservice-ftp')
+    implementation project(':uploadservice-box')
 }

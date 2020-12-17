@@ -1,7 +1,5 @@
 package net.gotev.uploadservice.box
 
-import android.content.Context
-import android.util.Log
 import com.box.androidsdk.content.BoxApiFile
 import com.box.androidsdk.content.BoxException
 import com.box.androidsdk.content.BoxFutureTask
@@ -9,26 +7,36 @@ import com.box.androidsdk.content.listeners.ProgressListener
 import com.box.androidsdk.content.models.BoxSession
 import com.box.androidsdk.content.models.BoxFile
 import com.box.androidsdk.content.requests.BoxRequestsFile
+import com.box.androidsdk.content.requests.BoxResponse
 import net.gotev.uploadservice.data.UploadFile
+import net.gotev.uploadservice.logger.UploadServiceLogger
 import java.io.File
-import java.io.InputStream
 import java.net.HttpURLConnection
 
 import java.io.Closeable
+import java.util.concurrent.CancellationException
 
 class BoxClientWrapper(
-    context: Context,
+    uploadId: String,
     boxSession: BoxSession,
+    shouldOverwrite: Boolean,
     observer: Observer
 ) : Closeable {
 
-    private val context = context
     private val boxFileApi = BoxApiFile(boxSession)
+    private val shouldOverwrite = shouldOverwrite
+    private lateinit var uploadingFile: UploadFile
+
+    companion object {
+        private val TAG = BoxClientWrapper::class.java.simpleName
+    }
 
     private lateinit var uploadTask: BoxFutureTask<BoxFile>
 
     interface Observer {
         fun onProgressChanged(client: BoxClientWrapper, numBytes: Long, bytesTotal: Long)
+        fun onCompleted(client: BoxClientWrapper, uploadFile: UploadFile)
+        fun onError(client: BoxClientWrapper, exception: Exception)
     }
 
     private val progressListener = object : ProgressListener {
@@ -37,42 +45,58 @@ class BoxClientWrapper(
         }
     }
 
+    private val completionListener = object : BoxFutureTask.OnCompletedListener<BoxFile> {
+        override fun onCompleted(response: BoxResponse<BoxFile>?) {
+            if (response != null && response.isSuccess) {
+                    observer.onCompleted(this@BoxClientWrapper, uploadingFile)
+            } else if (response?.exception?.cause?.javaClass?.name.equals(CancellationException::class.qualifiedName)) {
+                // User cancelled the upload
+                // Do nothing
+            } else {
+                val error = (response?.exception as BoxException).asBoxError
+                if (error != null && error.status == HttpURLConnection.HTTP_CONFLICT) {
+                    val conflicts = error.contextInfo.conflicts
+                    if (conflicts != null && conflicts.size == 1 && conflicts[0] is BoxFile) {
+                        if (shouldOverwrite) {
+                            uploadNewVersion((response.request as BoxRequestsFile.UploadFile).file, conflicts[0] as BoxFile)
+                        } else {
+                            observer.onCompleted(this@BoxClientWrapper, uploadingFile)
+                        }
+                    }
+                } else {
+                    UploadServiceLogger.error(TAG, uploadId, response.exception) { "Upload failed" }
+                    observer.onError(this@BoxClientWrapper, exception = response.exception)
+                }
+            }
+        }
+    }
+
     /**
      * Method demonstrates file being uploaded using the box file api
      */
     @Throws(Exception::class)
-    fun uploadFile(uploadFile: UploadFile) {
-                try {
-                    val file = File(uploadFile.path)
-                    val uploadFileName = file.name
-                    val uploadStream: InputStream = context.getResources().getAssets().open(uploadFileName)
-                    val destinationFolderId = "0"
-                    val uploadName = file.name
-                    val request: BoxRequestsFile.UploadFile = boxFileApi.getUploadRequest(uploadStream, uploadName, destinationFolderId)
-                    request.setProgressListener(progressListener)
-                    uploadTask = request.toTask()
-                    // val uploadFileInfo = request.send()
-                } catch (e: BoxException) {
-                    val error = e.asBoxError
-                    if (error != null && error.status == HttpURLConnection.HTTP_CONFLICT) {
-                        val conflicts = error.contextInfo.conflicts
-                        if (conflicts != null && conflicts.size == 1 && conflicts[0] is BoxFile) {
-                            uploadNewVersion(conflicts[0] as BoxFile)
-                            return
-                        }
-                    }
-                    Log.e("Wrapper/uploadFile", "Upload failed" + e.message)
-                }
+    fun uploadFile(uploadFile: UploadFile, folderId: String) {
+        uploadingFile = uploadFile
+        val file = File(uploadFile.path)
+        val request: BoxRequestsFile.UploadFile = boxFileApi.getUploadRequest(file, folderId)
+        request.setProgressListener(progressListener)
+        uploadTask = request.toTask()
+        uploadTask.addOnCompletedListener(completionListener)
+        uploadTask.run()
     }
-    private fun uploadNewVersion(file: BoxFile) {
-            val uploadFileName = "box_logo.png"
-            val uploadStream: InputStream = context.getResources().getAssets().open(uploadFileName)
-            val request = boxFileApi!!.getUploadNewVersionRequest(uploadStream, file.id)
-            uploadTask = request.toTask()
+
+    /**
+     * This would override an existing file. Note the upload will be started once again from the beginning
+     *
+     */
+    private fun uploadNewVersion(file: File, boxfile: BoxFile) {
+            val request = boxFileApi.getUploadNewVersionRequest(file, boxfile.id)
+            request.setProgressListener(progressListener)
+            val returnedBoxfile = request.send()
+            completionListener.onCompleted(BoxResponse(returnedBoxfile, null, request))
     }
 
     override fun close() {
         uploadTask.cancel(true)
-        // mFileApi.getAbortUploadSessionRequest(mFileApi.getUploadSession("a"))
     }
 }

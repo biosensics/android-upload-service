@@ -10,7 +10,9 @@ data class BoxUploadTaskParameters(
     var userID: String = "",
     var clientID: String = "",
     var clientSecret: String = "",
-    var redirectUrl: String = ""
+    var redirectUrl: String = "",
+    var shouldOverwrite: Boolean = false,
+    var folderId: String = "0"
 
 ) : Parcelable, Persistable {
     companion object : Persistable.Creator<BoxUploadTaskParameters> {
@@ -19,13 +21,17 @@ data class BoxUploadTaskParameters(
             const val clientID = "clientID"
             const val clientSecret = "clientSecret"
             const val redirectUrl = "redirectUrl"
+            const val shouldOverwrite = "shouldOverwrite"
+            const val folderId = "folderId"
         }
 
         override fun createFromPersistableData(data: PersistableData) = BoxUploadTaskParameters(
                 userID = data.getString(CodingKeys.userID),
                 clientID = data.getString(CodingKeys.clientID),
                 clientSecret = data.getString(CodingKeys.clientSecret),
-                redirectUrl = data.getString(CodingKeys.redirectUrl)
+                redirectUrl = data.getString(CodingKeys.redirectUrl),
+                shouldOverwrite = data.getBoolean(CodingKeys.shouldOverwrite),
+                folderId = data.getString(CodingKeys.folderId)
         )
     }
 
@@ -34,5 +40,7 @@ data class BoxUploadTaskParameters(
         putString(CodingKeys.clientID, clientID)
         putString(CodingKeys.clientSecret, clientSecret)
         putString(CodingKeys.redirectUrl, redirectUrl)
+        putBoolean(CodingKeys.shouldOverwrite, shouldOverwrite)
+        putString(CodingKeys.folderId, folderId)
     }
 }

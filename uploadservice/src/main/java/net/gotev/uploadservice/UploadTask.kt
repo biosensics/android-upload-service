@@ -52,7 +52,7 @@ abstract class UploadTask : Runnable {
      * Total transferred bytes. You should update this value in your subclasses when you upload
      * some data, and before calling [UploadTask.onProgress]
      */
-    private var uploadedBytes: Long = 0
+    var uploadedBytes: Long = 0
 
     /**
      * Start timestamp of this upload task.
