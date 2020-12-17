@@ -8,14 +8,14 @@ import net.gotev.uploadservice.persistence.Persistable
 import net.gotev.uploadservice.persistence.PersistableData
 
 @Parcelize
-data class S3UploadTaskParameters (
-        var serverSubpath: String = "",
-        var bucketName: String,
-        var identityPoolId: String,
-        var region: String = Regions.US_EAST_1.name,
-        var bucketKey: String = "com.aws.s3$bucketName",
-        var identityKey: String = "com.aws.s3$identityPoolId",
-        var cannedAccessControlList: String = CannedAccessControlList.Private.name,
+data class S3UploadTaskParameters(
+    var serverSubpath: String = "",
+    var bucketName: String,
+    var identityPoolId: String,
+    var region: String = Regions.US_EAST_1.name,
+    var bucketKey: String = "com.aws.s3$bucketName",
+    var identityKey: String = "com.aws.s3$identityPoolId",
+    var cannedAccessControlList: String = CannedAccessControlList.Private.name
 ) : Parcelable, Persistable {
     companion object : Persistable.Creator<S3UploadTaskParameters> {
 
@@ -36,7 +36,7 @@ data class S3UploadTaskParameters (
                 region = data.getString(CodingKeys.region),
                 bucketKey = data.getString(CodingKeys.bucketKey),
                 identityKey = data.getString(CodingKeys.identityKey),
-                cannedAccessControlList = data.getString(CodingKeys.cannedAccessControlList),
+                cannedAccessControlList = data.getString(CodingKeys.cannedAccessControlList)
         )
     }
 
