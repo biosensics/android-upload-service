@@ -71,9 +71,15 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
         }
     }
 
-    override fun onCompleted(client: BoxClientWrapper, uploadFile: UploadFile) {
+    override fun onSuccess(client: BoxClientWrapper, uploadFile: UploadFile, boxFileId: String) {
         params.files.filter { it.equals(uploadFile) }.first().successfullyUploaded = true
-        onResponseReceived(ServerResponse.successfulEmpty())
+        onResponseReceived(
+                ServerResponse(
+                        200,
+                        boxFileId.toByteArray(),
+                        LinkedHashMap()
+                )
+        )
     }
 
     override fun onError(client: BoxClientWrapper, exception: Exception) {

@@ -35,7 +35,7 @@ class BoxClientWrapper(
 
     interface Observer {
         fun onProgressChanged(client: BoxClientWrapper, numBytes: Long, bytesTotal: Long)
-        fun onCompleted(client: BoxClientWrapper, uploadFile: UploadFile)
+        fun onSuccess(client: BoxClientWrapper, uploadFile: UploadFile, boxFileId: String)
         fun onError(client: BoxClientWrapper, exception: Exception)
     }
 
@@ -48,7 +48,7 @@ class BoxClientWrapper(
     private val completionListener = object : BoxFutureTask.OnCompletedListener<BoxFile> {
         override fun onCompleted(response: BoxResponse<BoxFile>?) {
             if (response != null && response.isSuccess) {
-                    observer.onCompleted(this@BoxClientWrapper, uploadingFile)
+                    observer.onSuccess(this@BoxClientWrapper, uploadingFile, response.result.id)
             } else if (response?.exception?.cause?.javaClass?.name.equals(CancellationException::class.qualifiedName)) {
                 // User cancelled the upload
                 // Do nothing
@@ -60,7 +60,7 @@ class BoxClientWrapper(
                         if (shouldOverwrite) {
                             uploadNewVersion((response.request as BoxRequestsFile.UploadFile).file, conflicts[0] as BoxFile)
                         } else {
-                            observer.onCompleted(this@BoxClientWrapper, uploadingFile)
+                            observer.onSuccess(this@BoxClientWrapper, uploadingFile, response.result.id)
                         }
                     }
                 } else {
