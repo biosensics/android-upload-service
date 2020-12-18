@@ -23,6 +23,7 @@ class BoxAuthenticate(context: Context, clientID: String, clientSecret: String, 
     }
 
     fun configureClient() {
+        BoxConfig.IS_LOG_ENABLED = true
         BoxConfig.CLIENT_ID = clientID
         BoxConfig.CLIENT_SECRET = clientSecret
         BoxConfig.REDIRECT_URL = redirectURL
