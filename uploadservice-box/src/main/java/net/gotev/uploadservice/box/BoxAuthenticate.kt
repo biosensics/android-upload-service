@@ -12,14 +12,26 @@ class BoxAuthenticate(context: Context, clientID: String, clientSecret: String, 
     private val clientID = clientID
     private val clientSecret = clientSecret
     private val redirectURL = redirectURL
+    private lateinit var boxSession: BoxSession;
 
     companion object {
         private val TAG = BoxAuthenticate::class.java.simpleName
     }
 
+    /**
+     * Authenticates user Box account and returns the box session.
+     * The UI for authentication is handled automatically by Box
+     */
     fun authenticate(): BoxSession {
         configureClient()
         return initSession()
+    }
+
+    /**
+     * Log out box session
+     */
+    fun logout() {
+        boxSession.logout()
     }
 
     fun configureClient() {
@@ -30,10 +42,10 @@ class BoxAuthenticate(context: Context, clientID: String, clientSecret: String, 
     }
 
     private fun initSession(): BoxSession {
-        var mSession = BoxSession(context)
-        mSession!!.setSessionAuthListener(this)
-        mSession.authenticate(context)
-        return mSession
+        boxSession = BoxSession(context)
+        boxSession!!.setSessionAuthListener(this)
+        boxSession.authenticate(context)
+        return boxSession
     }
 
     override fun onRefreshed(info: BoxAuthentication.BoxAuthenticationInfo?) {

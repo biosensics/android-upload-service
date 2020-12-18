@@ -54,7 +54,7 @@ class BoxClientWrapper(
                 // Do nothing
             } else {
                 val error = (response?.exception as BoxException).asBoxError
-                if (error != null && error.status == HttpURLConnection.HTTP_CONFLICT) {
+                if (error != null && error.status == HttpURLConnection.HTTP_CONFLICT) { // File already exists in the box
                     val conflicts = error.contextInfo.conflicts
                     if (conflicts != null && conflicts.size == 1 && conflicts[0] is BoxFile) {
                         if (shouldOverwrite) {
@@ -63,7 +63,7 @@ class BoxClientWrapper(
                             observer.onSuccess(this@BoxClientWrapper, uploadingFile, response.result.id)
                         }
                     }
-                } else {
+                } else { // Upload failed (network error, etc.)
                     UploadServiceLogger.error(TAG, uploadId, response.exception) { "Upload failed" }
                     observer.onError(this@BoxClientWrapper, exception = response.exception)
                 }
@@ -72,7 +72,7 @@ class BoxClientWrapper(
     }
 
     /**
-     * Method demonstrates file being uploaded using the box file api
+     * Uploads a file using the box file api
      */
     @Throws(Exception::class)
     fun uploadFile(uploadFile: UploadFile, folderId: String) {
@@ -86,7 +86,9 @@ class BoxClientWrapper(
     }
 
     /**
-     * This would override an existing file. Note the upload will be started once again from the beginning
+     * This would override an existing file.
+     * The version of the file would increase after successful upload.
+     * Note: the upload will be started once again from the beginning on this process.
      *
      */
     private fun uploadNewVersion(file: File, boxfile: BoxFile) {
