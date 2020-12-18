@@ -77,7 +77,6 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
     }
 
     override fun onError(client: BoxClientWrapper, exception: Exception) {
-        onResponseReceived(ServerResponse.errorEmpty())
         exceptionHandling(exception)
     }
 }
