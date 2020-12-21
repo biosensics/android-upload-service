@@ -33,7 +33,7 @@ class BoxSetup(context: Context, clientID: String, clientSecret: String, redirec
      * Creates a directory on the root
      * @param directoryName name of the directory
      */
-    fun createDirectory(directoryName: String) : BoxFolder {
+    fun createDirectory(directoryName: String): BoxFolder {
         return BoxApiFolder(boxSession).getCreateRequest("0", directoryName).send()
     }
 
@@ -42,7 +42,7 @@ class BoxSetup(context: Context, clientID: String, clientSecret: String, redirec
      * @param directoryName name of the directory
      * @param parentDirectoryId Id of the parent directory
      */
-    fun createDirectory(directoryName: String, parentDirectoryId: String) : BoxFolder {
+    fun createDirectory(directoryName: String, parentDirectoryId: String): BoxFolder {
         return BoxApiFolder(boxSession).getCreateRequest(parentDirectoryId, directoryName).send()
     }
 
