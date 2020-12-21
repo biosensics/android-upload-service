@@ -7,7 +7,7 @@ import com.box.androidsdk.content.auth.BoxAuthentication
 import com.box.androidsdk.content.models.BoxSession
 import net.gotev.uploadservice.logger.UploadServiceLogger
 
-class BoxConfig(context: Context, clientID: String, clientSecret: String, redirectURL: String) : BoxAuthentication.AuthListener {
+class BoxSetup(context: Context, clientID: String, clientSecret: String, redirectURL: String) : BoxAuthentication.AuthListener {
 
     private val context = context
     private val clientID = clientID
@@ -52,7 +52,7 @@ class BoxConfig(context: Context, clientID: String, clientSecret: String, redire
         boxSession.logout()
     }
 
-    fun configureClient() {
+    private fun configureClient() {
         BoxConfig.IS_LOG_ENABLED = true
         BoxConfig.CLIENT_ID = clientID
         BoxConfig.CLIENT_SECRET = clientSecret
