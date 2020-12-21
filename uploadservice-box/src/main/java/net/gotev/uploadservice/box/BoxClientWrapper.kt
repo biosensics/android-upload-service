@@ -48,7 +48,7 @@ class BoxClientWrapper(
     private val completionListener = object : BoxFutureTask.OnCompletedListener<BoxFile> {
         override fun onCompleted(response: BoxResponse<BoxFile>?) {
             if (response != null && response.isSuccess) {
-                    observer.onSuccess(this@BoxClientWrapper, uploadingFile, response.result.id)
+                observer.onSuccess(this@BoxClientWrapper, uploadingFile, response.result.id)
             } else if (response?.exception?.cause?.javaClass?.name.equals(CancellationException::class.qualifiedName)) {
                 // User cancelled the upload
                 // Do nothing
@@ -92,10 +92,10 @@ class BoxClientWrapper(
      *
      */
     private fun uploadNewVersion(file: File, boxfile: BoxFile) {
-            val request = boxFileApi.getUploadNewVersionRequest(file, boxfile.id)
-            request.setProgressListener(progressListener)
-            val returnedBoxfile = request.send()
-            completionListener.onCompleted(BoxResponse(returnedBoxfile, null, request))
+        val request = boxFileApi.getUploadNewVersionRequest(file, boxfile.id)
+        request.setProgressListener(progressListener)
+        val returnedBoxfile = request.send()
+        completionListener.onCompleted(BoxResponse(returnedBoxfile, null, request))
     }
 
     override fun close() {

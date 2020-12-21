@@ -19,9 +19,9 @@ class S3UploadRequest(
 ) : UploadRequest<S3UploadRequest>(context, "serverUrl") {
 
     protected val s3params = S3UploadTaskParameters(
-            bucketName = bucketName,
-            identityPoolId = identityPoolId,
-            region = region.getName()
+        bucketName = bucketName,
+        identityPoolId = identityPoolId,
+        region = region.getName()
     )
 
     override val taskClass: Class<out UploadTask>
@@ -36,8 +36,10 @@ class S3UploadRequest(
      * @return amazon server url of the uploaded file.
      */
     fun getUrl(index: Int?) = AmazonS3Client(
-            CognitoCachingCredentialsProvider(context, s3params.identityPoolId, Regions.fromName(s3params.region)), Region.getRegion(Regions.fromName(s3params.region)))
-            .getUrl(s3params.bucketName, s3params.serverSubpath + "/" + File(files.get((index ?: 0)).path).name)
+        CognitoCachingCredentialsProvider(context, s3params.identityPoolId, Regions.fromName(s3params.region)),
+        Region.getRegion(Regions.fromName(s3params.region))
+    )
+        .getUrl(s3params.bucketName, s3params.serverSubpath + "/" + File(files.get((index ?: 0)).path).name)
 
     /* if this is not set, The uploaded file path will be stored on the root directory of the server
     * if you are uploading `/path/to/myfile.txt`, you will have `myfile.txt`
@@ -63,8 +65,9 @@ class S3UploadRequest(
      */
     override fun startUpload(): String {
         require(files.isNotEmpty()) { "Add at least one file to start S3 upload!" }
-        files.forEach { uploadFile -> run {
-            require(File(uploadFile.path).exists()) { "One or more files do not exist!" }
+        files.forEach { uploadFile ->
+            run {
+                require(File(uploadFile.path).exists()) { "One or more files do not exist!" }
             }
         }
         return super.startUpload()

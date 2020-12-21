@@ -11,10 +11,10 @@ import java.io.FileNotFoundException
 class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest<BoxUploadRequest>(context, "serverURL") {
 
     protected val boxparams = BoxUploadTaskParameters(
-            userID = boxSession.userId,
-            clientID = boxSession.clientId,
-            clientSecret = boxSession.clientSecret,
-            redirectUrl = boxSession.redirectUrl
+        userID = boxSession.userId,
+        clientID = boxSession.clientId,
+        clientSecret = boxSession.clientSecret,
+        redirectUrl = boxSession.redirectUrl
     )
 
     override val taskClass: Class<out UploadTask>
@@ -43,9 +43,10 @@ class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest
      */
     override fun startUpload(): String {
         require(files.isNotEmpty()) { "Add at least one file to start box upload!" }
-        files.forEach { uploadFile -> run {
-            require(File(uploadFile.path).exists()) { "One or more files do not exist!" }
-        }
+        files.forEach { uploadFile ->
+            run {
+                require(File(uploadFile.path).exists()) { "One or more files do not exist!" }
+            }
         }
         return super.startUpload()
     }

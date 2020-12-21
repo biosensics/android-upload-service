@@ -19,11 +19,12 @@ class S3UploadTask() : UploadTask(), S3ClientWrapper.Observer {
     @Throws(Exception::class)
     override fun upload(httpStack: HttpStack) {
         val s3params = s3params
-        S3ClientWrapper(uploadId = params.id,
-                context = context,
-                identityPoolId = s3params.identityPoolId,
-                region = Regions.fromName(s3params.region),
-                observer = this
+        S3ClientWrapper(
+            uploadId = params.id,
+            context = context,
+            identityPoolId = s3params.identityPoolId,
+            region = Regions.fromName(s3params.region),
+            observer = this
         ).use { s3Client ->
 
             // this is needed to calculate the total bytes and the uploaded bytes, because if the

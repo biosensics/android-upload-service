@@ -16,10 +16,10 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
     override fun upload(httpStack: HttpStack) {
         val boxParams = boxParams
         BoxClientWrapper(
-                uploadId = params.id,
-                boxSession = BoxSession(context, boxParams.userID, boxParams.clientID, boxParams.clientSecret, boxParams.redirectUrl),
-                shouldOverwrite = boxParams.shouldOverwrite,
-                observer = this
+            uploadId = params.id,
+            boxSession = BoxSession(context, boxParams.userID, boxParams.clientID, boxParams.clientSecret, boxParams.redirectUrl),
+            shouldOverwrite = boxParams.shouldOverwrite,
+            observer = this
         ).use { boxClient ->
 
             // this is needed to calculate the total bytes and the uploaded bytes, because if the
@@ -74,11 +74,11 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
     override fun onSuccess(client: BoxClientWrapper, uploadFile: UploadFile, boxFileId: String) {
         params.files.filter { it.equals(uploadFile) }.first().successfullyUploaded = true
         onResponseReceived(
-                ServerResponse(
-                        200,
-                        boxFileId.toByteArray(),
-                        LinkedHashMap()
-                )
+            ServerResponse(
+                200,
+                boxFileId.toByteArray(),
+                LinkedHashMap()
+            )
         )
     }
 

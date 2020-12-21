@@ -3,10 +3,10 @@ package net.gotev.uploadservice.s3
 import android.content.Context
 import android.content.Intent
 import com.amazonaws.auth.CognitoCachingCredentialsProvider
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferService
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
@@ -70,10 +70,10 @@ class S3ClientWrapper(
         uploadingFile = uploadFile
         val file = File(uploadFile.path)
         transferObserver = transferUtility.upload(
-                bucketName,
-                serverSubPath + "/" + file.name,
-                file,
-                cannedAccessControlList
+            bucketName,
+            serverSubPath + "/" + file.name,
+            file,
+            cannedAccessControlList
         )
         transferObserver.setTransferListener(transferListener)
     }

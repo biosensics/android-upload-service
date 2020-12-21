@@ -13,8 +13,8 @@ data class S3UploadTaskParameters(
     var bucketName: String,
     var identityPoolId: String,
     var region: String = Regions.US_EAST_1.name,
-    var bucketKey: String = "com.aws.s3$bucketName",
-    var identityKey: String = "com.aws.s3$identityPoolId",
+    var bucketKey: String = "com.aws.s3.$bucketName",
+    var identityKey: String = "com.aws.s3.$identityPoolId",
     var cannedAccessControlList: String = CannedAccessControlList.Private.name
 ) : Parcelable, Persistable {
     companion object : Persistable.Creator<S3UploadTaskParameters> {
@@ -30,13 +30,13 @@ data class S3UploadTaskParameters(
         }
 
         override fun createFromPersistableData(data: PersistableData) = S3UploadTaskParameters(
-                serverSubpath = data.getString(CodingKeys.serverSubpath),
-                bucketName = data.getString(CodingKeys.bucketName),
-                identityPoolId = data.getString(CodingKeys.identityPoolId),
-                region = data.getString(CodingKeys.region),
-                bucketKey = data.getString(CodingKeys.bucketKey),
-                identityKey = data.getString(CodingKeys.identityKey),
-                cannedAccessControlList = data.getString(CodingKeys.cannedAccessControlList)
+            serverSubpath = data.getString(CodingKeys.serverSubpath),
+            bucketName = data.getString(CodingKeys.bucketName),
+            identityPoolId = data.getString(CodingKeys.identityPoolId),
+            region = data.getString(CodingKeys.region),
+            bucketKey = data.getString(CodingKeys.bucketKey),
+            identityKey = data.getString(CodingKeys.identityKey),
+            cannedAccessControlList = data.getString(CodingKeys.cannedAccessControlList),
         )
     }
 

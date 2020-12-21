@@ -13,7 +13,7 @@ class BoxConfig(context: Context, clientID: String, clientSecret: String, redire
     private val clientID = clientID
     private val clientSecret = clientSecret
     private val redirectURL = redirectURL
-    private lateinit var boxSession: BoxSession;
+    private lateinit var boxSession: BoxSession
 
     companion object {
         private val TAG = BoxConfig::class.java.simpleName
@@ -42,7 +42,7 @@ class BoxConfig(context: Context, clientID: String, clientSecret: String, redire
      * @param parentDirectoryId Id of the parent directory
      */
     fun createDirectory(directoryName: String, parentDirectoryId: String) {
-       BoxApiFolder(boxSession).getCreateRequest(parentDirectoryId, directoryName).send()
+        BoxApiFolder(boxSession).getCreateRequest(parentDirectoryId, directoryName).send()
     }
 
     /**

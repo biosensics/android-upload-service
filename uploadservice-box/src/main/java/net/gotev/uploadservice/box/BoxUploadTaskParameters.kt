@@ -26,12 +26,12 @@ data class BoxUploadTaskParameters(
         }
 
         override fun createFromPersistableData(data: PersistableData) = BoxUploadTaskParameters(
-                userID = data.getString(CodingKeys.userID),
-                clientID = data.getString(CodingKeys.clientID),
-                clientSecret = data.getString(CodingKeys.clientSecret),
-                redirectUrl = data.getString(CodingKeys.redirectUrl),
-                shouldOverwrite = data.getBoolean(CodingKeys.shouldOverwrite),
-                folderId = data.getString(CodingKeys.folderId)
+            userID = data.getString(CodingKeys.userID),
+            clientID = data.getString(CodingKeys.clientID),
+            clientSecret = data.getString(CodingKeys.clientSecret),
+            redirectUrl = data.getString(CodingKeys.redirectUrl),
+            shouldOverwrite = data.getBoolean(CodingKeys.shouldOverwrite),
+            folderId = data.getString(CodingKeys.folderId)
         )
     }
 
