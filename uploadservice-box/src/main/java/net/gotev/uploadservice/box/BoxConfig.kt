@@ -1,12 +1,13 @@
 package net.gotev.uploadservice.box
 
 import android.content.Context
+import com.box.androidsdk.content.BoxApiFolder
 import com.box.androidsdk.content.BoxConfig
 import com.box.androidsdk.content.auth.BoxAuthentication
 import com.box.androidsdk.content.models.BoxSession
 import net.gotev.uploadservice.logger.UploadServiceLogger
 
-class BoxAuthenticate(context: Context, clientID: String, clientSecret: String, redirectURL: String) : BoxAuthentication.AuthListener {
+class BoxConfig(context: Context, clientID: String, clientSecret: String, redirectURL: String) : BoxAuthentication.AuthListener {
 
     private val context = context
     private val clientID = clientID
@@ -15,7 +16,7 @@ class BoxAuthenticate(context: Context, clientID: String, clientSecret: String, 
     private lateinit var boxSession: BoxSession;
 
     companion object {
-        private val TAG = BoxAuthenticate::class.java.simpleName
+        private val TAG = BoxConfig::class.java.simpleName
     }
 
     /**
@@ -25,6 +26,23 @@ class BoxAuthenticate(context: Context, clientID: String, clientSecret: String, 
     fun authenticate(): BoxSession {
         configureClient()
         return initSession()
+    }
+
+    /**
+     * Creates a directory on the root
+     * @param directoryName name of the directory
+     */
+    fun createDirectory(directoryName: String) {
+        BoxApiFolder(boxSession).getCreateRequest("0", directoryName).send()
+    }
+
+    /**
+     * Creates a directory under a given parent directory
+     * @param directoryName name of the directory
+     * @param parentDirectoryId Id of the parent directory
+     */
+    fun createDirectory(directoryName: String, parentDirectoryId: String) {
+       BoxApiFolder(boxSession).getCreateRequest(parentDirectoryId, directoryName).send()
     }
 
     /**
