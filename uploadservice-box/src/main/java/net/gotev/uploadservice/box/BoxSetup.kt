@@ -4,6 +4,7 @@ import android.content.Context
 import com.box.androidsdk.content.BoxApiFolder
 import com.box.androidsdk.content.BoxConfig
 import com.box.androidsdk.content.auth.BoxAuthentication
+import com.box.androidsdk.content.models.BoxFolder
 import com.box.androidsdk.content.models.BoxSession
 import net.gotev.uploadservice.logger.UploadServiceLogger
 
@@ -32,8 +33,8 @@ class BoxSetup(context: Context, clientID: String, clientSecret: String, redirec
      * Creates a directory on the root
      * @param directoryName name of the directory
      */
-    fun createDirectory(directoryName: String) {
-        BoxApiFolder(boxSession).getCreateRequest("0", directoryName).send()
+    fun createDirectory(directoryName: String) : BoxFolder {
+        return BoxApiFolder(boxSession).getCreateRequest("0", directoryName).send()
     }
 
     /**
@@ -41,8 +42,8 @@ class BoxSetup(context: Context, clientID: String, clientSecret: String, redirec
      * @param directoryName name of the directory
      * @param parentDirectoryId Id of the parent directory
      */
-    fun createDirectory(directoryName: String, parentDirectoryId: String) {
-        BoxApiFolder(boxSession).getCreateRequest(parentDirectoryId, directoryName).send()
+    fun createDirectory(directoryName: String, parentDirectoryId: String) : BoxFolder {
+        return BoxApiFolder(boxSession).getCreateRequest(parentDirectoryId, directoryName).send()
     }
 
     /**
