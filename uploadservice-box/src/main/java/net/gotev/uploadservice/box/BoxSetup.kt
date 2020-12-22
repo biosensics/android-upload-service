@@ -15,9 +15,12 @@ class BoxSetup(context: Context, clientID: String, clientSecret: String, redirec
     private val clientSecret = clientSecret
     private val redirectURL = redirectURL
     private lateinit var boxSession: BoxSession
+    private var observer: BoxAuthenticationObserver? = null
 
     companion object {
         private val TAG = BoxConfig::class.java.simpleName
+        @JvmStatic
+        fun getDirectoryName(boxSession: BoxSession, directoryId: String): String = BoxApiFolder(boxSession).getInfoRequest(directoryId).send().name
     }
 
     /**
@@ -62,24 +65,36 @@ class BoxSetup(context: Context, clientID: String, clientSecret: String, redirec
 
     private fun initSession(): BoxSession {
         boxSession = BoxSession(context)
-        boxSession!!.setSessionAuthListener(this)
+        boxSession.setSessionAuthListener(this)
         boxSession.authenticate(context)
         return boxSession
     }
 
+    /**
+     * Optional -- Subscribes to authentication events
+     */
+    fun subscribe(observer: BoxAuthenticationObserver): BoxSession {
+        this.observer = observer
+        return authenticate()
+    }
+
     override fun onRefreshed(info: BoxAuthentication.BoxAuthenticationInfo?) {
         UploadServiceLogger.info(TAG, "N/A") { "Authentication refreshed" }
+        this.observer?.onRefreshed(info)
     }
 
     override fun onAuthCreated(info: BoxAuthentication.BoxAuthenticationInfo?) {
         UploadServiceLogger.info(TAG, "N/A") { "Authentication created" }
+        this.observer?.onAuthCreated(info)
     }
 
     override fun onAuthFailure(info: BoxAuthentication.BoxAuthenticationInfo?, ex: Exception?) {
         UploadServiceLogger.info(TAG, "N/A") { "Authentication failed" }
+        this.observer?.onAuthFailure(info, ex)
     }
 
     override fun onLoggedOut(info: BoxAuthentication.BoxAuthenticationInfo?, ex: Exception?) {
         UploadServiceLogger.info(TAG, "N/A") { "Logged out" }
+        this.observer?.onLoggedOut(info, ex)
     }
 }
