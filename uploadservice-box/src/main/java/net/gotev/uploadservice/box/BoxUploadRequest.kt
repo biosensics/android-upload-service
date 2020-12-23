@@ -57,6 +57,10 @@ class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest
         return super.startUpload()
     }
 
+    /**
+     * Creates an UploadFile and adds it to the files list for upload
+     * @param filepath of the file
+     */
     @Throws(FileNotFoundException::class)
     fun addFileToUpload(filePath: String): BoxUploadRequest {
         files.add(UploadFile(filePath))
