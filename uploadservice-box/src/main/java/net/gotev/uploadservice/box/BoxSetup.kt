@@ -26,6 +26,8 @@ class BoxSetup(context: Context, clientID: String, clientSecret: String, redirec
     /**
      * Authenticates user Box account and returns the box session.
      * The UI for authentication is handled automatically by Box
+     * Note: This does oAuth 2.0 authentication - User/Client Authentication
+     * @return authenticated session
      */
     fun authenticate(): BoxSession {
         configureClient()
@@ -72,6 +74,7 @@ class BoxSetup(context: Context, clientID: String, clientSecret: String, redirec
 
     /**
      * Optional -- Subscribes to authentication events
+     * @return authenticated session
      */
     fun subscribe(observer: BoxAuthenticationObserver): BoxSession {
         this.observer = observer

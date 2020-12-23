@@ -24,6 +24,7 @@ class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest
 
     /**
      * Sets whether a new version of the file should be overwritten if a file already exists
+     * @param shouldOverwrite -> if true, it would overwrite an existing file. If false, it would dismiss the file upload with the same name on the same folder
      */
     fun setShouldOverwrite(shouldOverwrite: Boolean): BoxUploadRequest {
         boxparams.shouldOverwrite = shouldOverwrite
@@ -31,7 +32,11 @@ class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest
     }
 
     /**
-     * Sets the folder Id of the uploaded file. you should get this Id from your account
+     * Sets the folder Id of the uploaded file.
+     * You can get this Id from your account
+     * Or you can get the ID when you do BoxSetup.CreateFolder
+     * @param folderId which would be used for upcoming uploads
+     *
      */
     fun setFolderId(folderId: String): BoxUploadRequest {
         boxparams.folderId = folderId
@@ -39,7 +44,8 @@ class BoxUploadRequest(context: Context, boxSession: BoxSession) : UploadRequest
     }
 
     /**
-     * This would call the upload method of the upload task class (S3UploadTask)
+     * This would call the upload method of the upload task class (BoxUploadTask)
+     * @return uploadId
      */
     override fun startUpload(): String {
         require(files.isNotEmpty()) { "Add at least one file to start box upload!" }

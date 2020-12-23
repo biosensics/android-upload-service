@@ -57,9 +57,9 @@ class BoxClientWrapper(
                 if (error != null && error.status == HttpURLConnection.HTTP_CONFLICT) { // File already exists in the box
                     val conflicts = error.contextInfo.conflicts
                     if (conflicts != null && conflicts.size == 1 && conflicts[0] is BoxFile) {
-                        if (shouldOverwrite) {
+                        if (shouldOverwrite) { // Upload new version
                             uploadNewVersion((response.request as BoxRequestsFile.UploadFile).file, conflicts[0] as BoxFile)
-                        } else {
+                        } else { // Do nothing and notify observers that upload is completed
                             observer.onSuccess(this@BoxClientWrapper, uploadingFile, response.result.id)
                         }
                     }
@@ -73,6 +73,8 @@ class BoxClientWrapper(
 
     /**
      * Uploads a file using the box file api
+     * @param uploadFile the file to be uploaded
+     * @param folderId the id of the folder that the uploading file would go to. If it is not set on upload request, it would upload to root folder
      */
     @Throws(Exception::class)
     fun uploadFile(uploadFile: UploadFile, folderId: String) {
@@ -98,6 +100,9 @@ class BoxClientWrapper(
         completionListener.onCompleted(BoxResponse(returnedBoxfile, null, request))
     }
 
+    /**
+     * cancel an upload in progress task
+     */
     override fun close() {
         uploadTask.cancel(true)
     }

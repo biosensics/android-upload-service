@@ -41,6 +41,7 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
     }
 
     /**
+     * B Notes: based on my observation this does nothing and doesn't work! It needs to be fixed by the developer net.gotev
      * Calculates the total bytes of this upload task.
      * This the sum of all the lengths of the successfully uploaded files and also the pending
      * ones.
