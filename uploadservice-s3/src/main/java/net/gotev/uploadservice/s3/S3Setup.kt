@@ -1,12 +1,12 @@
 package net.gotev.uploadservice.s3
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.core.app.NotificationCompat
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferService
 import java.util.UUID
 
@@ -23,16 +23,17 @@ class S3Setup(context: Context) {
             val pendingIntent = PendingIntent.getActivity(context, 0, tsIntent, 0)
 
             // Notification Manager to listen to a channel
-            val channel = NotificationChannel(id, "Transfer Service Channel", NotificationManager.IMPORTANCE_DEFAULT)
+            val channel = NotificationChannel(id, "Transfer Service Channel", NotificationManager.IMPORTANCE_NONE)
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
 
             // Valid notification object required
-            val notification = Notification.Builder(context, id)
-                .setContentTitle("Transfer Service Notification")
-                .setContentText("Transfer Service is running")
-                .setContentIntent(pendingIntent)
-                .build()
+            val notification = NotificationCompat.Builder(context, id)
+                    .setContentTitle("Transfer Service Notification")
+                    .setContentText("Transfer Service is running")
+                    .setContentIntent(pendingIntent)
+                    .setNotificationSilent()
+                    .build()
 
             tsIntent.putExtra(TransferService.INTENT_KEY_NOTIFICATION, notification)
             tsIntent.putExtra(TransferService.INTENT_KEY_NOTIFICATION_ID, 15)
