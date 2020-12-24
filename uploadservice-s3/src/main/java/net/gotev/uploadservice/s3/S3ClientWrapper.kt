@@ -2,6 +2,7 @@ package net.gotev.uploadservice.s3
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.amazonaws.auth.CognitoCachingCredentialsProvider
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
@@ -33,7 +34,11 @@ class S3ClientWrapper(
     private lateinit var uploadingFile: UploadFile
 
     init {
-        context.startService(Intent(context, TransferService::class.java))
+        if (Build.VERSION.SDK_INT >= 26) {
+            context.startForegroundService(Intent(context, TransferService::class.java))
+        } else {
+            context.startService(Intent(context, TransferService::class.java))
+        }
     }
 
     interface Observer {
