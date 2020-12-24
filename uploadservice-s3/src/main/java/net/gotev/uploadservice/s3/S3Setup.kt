@@ -29,11 +29,11 @@ class S3Setup(context: Context) {
 
             // Valid notification object required
             val notification = NotificationCompat.Builder(context, id)
-                    .setContentTitle("Transfer Service Notification")
-                    .setContentText("Transfer Service is running")
-                    .setContentIntent(pendingIntent)
-                    .setNotificationSilent()
-                    .build()
+                .setContentTitle("Transfer Service Notification")
+                .setContentText("Transfer Service is running")
+                .setContentIntent(pendingIntent)
+                .setNotificationSilent()
+                .build()
 
             tsIntent.putExtra(TransferService.INTENT_KEY_NOTIFICATION, notification)
             tsIntent.putExtra(TransferService.INTENT_KEY_NOTIFICATION_ID, 15)
