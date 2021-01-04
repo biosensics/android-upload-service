@@ -12,7 +12,7 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
         BoxUploadTaskParameters.createFromPersistableData(params.additionalParameters)
     }
 
-    private var uploadedBytes: Long = 0
+    private var uploadBytes: Long = 0
 
     @Throws(Exception::class)
     override fun upload(httpStack: HttpStack) {
@@ -50,7 +50,7 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
      */
     private fun calculateUploadedAndTotalBytes() {
         resetUploadedBytes()
-        uploadedBytes = 0
+        uploadBytes = 0
         var totalUploaded: Long = 0
 
         for (file in successfullyUploadedFiles) {
@@ -67,8 +67,8 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
     }
 
     override fun onProgressChanged(client: BoxClientWrapper, numBytes: Long, bytesTotal: Long) {
-        onProgress(numBytes - uploadedBytes)
-        uploadedBytes = numBytes
+        onProgress(numBytes - uploadBytes)
+        uploadBytes = numBytes
         if (!shouldContinue) {
             client.close()
             exceptionHandling(Exception("User cancelled upload!"))
