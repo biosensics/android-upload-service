@@ -31,11 +31,13 @@ class BoxUploadTask : UploadTask(), BoxClientWrapper.Observer {
             calculateUploadedAndTotalBytes()
 
             for (file in params.files) {
-                if (!shouldContinue)
+                if (!shouldContinue) {
                     break
+                }
 
-                if (file.successfullyUploaded)
+                if (file.successfullyUploaded) {
                     continue
+                }
 
                 boxClient.uploadFile(file, boxParams.folderId)
             }
